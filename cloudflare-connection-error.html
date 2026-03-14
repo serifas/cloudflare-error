@@ -293,37 +293,13 @@
       setInterval(function() {
         remaining--;
         if (remaining <= 0) {
-          remaining = INTERVAL;
-          checkOrigin();
+          statusBar.className = 'status-bar checking';
+          statusText.innerHTML = 'Reloading\u2026';
+          location.reload();
+          return;
         }
         if (countdownEl) countdownEl.textContent = remaining;
       }, 1000);
-
-      function checkOrigin() {
-        statusBar.className = 'status-bar checking';
-        statusText.innerHTML = 'Checking server status\u2026';
-
-        fetch(location.href, { method: 'HEAD', cache: 'no-store' })
-          .then(function(r) {
-            if (r.ok) {
-              statusBar.className = 'status-bar back-online';
-              statusText.innerHTML = 'Server is back online! Reloading\u2026';
-              setTimeout(function() { location.reload(); }, 1200);
-            } else {
-              resetCountdown();
-            }
-          })
-          .catch(function() {
-            resetCountdown();
-          });
-      }
-
-      function resetCountdown() {
-        remaining = INTERVAL;
-        statusBar.className = 'status-bar';
-        statusText.innerHTML = 'Retrying in <strong id="countdown">' + INTERVAL + '</strong>s';
-        countdownEl = document.getElementById('countdown');
-      }
     })();
   </script>
 
